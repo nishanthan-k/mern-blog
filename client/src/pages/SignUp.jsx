@@ -1,11 +1,26 @@
-import { Button, Label, TextInput } from "flowbite-react";
+import { Button } from "flowbite-react";
+import { Form, Formik } from "formik";
 import { Link } from "react-router-dom";
+import CustomInput from "../utils/form/CustomInput";
+import { signUpFormValidation } from "../utils/validation/signUpFormValidation";
 
 const SignUp = () => {
+  const handleSubmit = async (props) => {
+    const errors = await signUpFormValidation(props.values);
+
+    if (errors && errors.length > 0) {
+      console.log("errors", errors);
+      props.setErrors({ ...errors });
+    } else {
+      console.log("Form submitted successfully:", props.values);
+    }
+
+    props.setSubmitting(false);
+  };
+
   return (
     <div className="min-h-screen mt-20">
       <div className="flex p-3 max-w-3xl mx-auto flex-col md:flex-row md:items-center">
-
         {/* Left */}
         <div className="flex-1">
           <Link to="/" className="font-bold dark:text-white text-4xl">
@@ -19,38 +34,61 @@ const SignUp = () => {
 
         {/* Right */}
         <div className="flex-1">
-          <form className="flex flex-col gap-4">
-            <div>
-              <Label value="Username" />
-              <TextInput
-                type="text"
-                placeholder="Username"
-                id="username"
-                name="username"
-              />
-            </div>
-            <div>
-              <Label value="Email" />
-              <TextInput
-                type="text"
-                placeholder="Email"
-                id="email"
-                name="email"
-              />
-            </div>
-            <div>
-              <Label value="Password" />
-              <TextInput
-                type="password"
-                placeholder="Password"
-                id="password"
-                name="password"
-              />
-            </div>
-            <Button gradientDuoTone="purpleToPink">
-              Sign Up
-            </Button>
-          </form>
+          <Formik
+            initialValues={{
+              username: "",
+              email: "",
+              password: "",
+              confirmPassword: "",
+            }}
+            validateOnChange={false} // Update: Disable validation on change
+            validateOnBlur={true} // Update: Enable validation on blur
+            validate={signUpFormValidation}
+            onSubmit={(values, { setSubmitting }) => {
+              handleSubmit(values, setSubmitting); // Pass values and setSubmitting to handleSubmit
+            }}
+          >
+            {(props) => (
+              <Form className="">
+                <CustomInput
+                  type="text"
+                  label="Username"
+                  name="username"
+                  placeholder="Enter your username"
+                />
+
+                <CustomInput
+                  type="email"
+                  label="Email"
+                  name="email"
+                  placeholder="Enter your email"
+                />
+
+                <CustomInput
+                  type="password"
+                  label="Password"
+                  name="password"
+                  placeholder="Enter your password"
+                />
+
+                <CustomInput
+                  type="password"
+                  label="Confirm Password"
+                  name="confirmPassword"
+                  placeholder="Enter your confirm password"
+                />
+
+                <Button
+                  type="submit"
+                  gradientDuoTone="purpleToPink"
+                  className="mt-5 w-full"
+                >
+                  Sign Up
+                </Button>
+              </Form>
+            )}
+          </Formik>
+
           <div className="flex gap=2 text-sm mt-5">
             <span>Have an account?</span>
             <Link to="/signin" className="text-blue-500">
