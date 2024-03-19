@@ -1,21 +1,41 @@
+import axios from "axios";
+import React, { useState } from "react";
 import { Button } from "flowbite-react";
 import { Form, Formik } from "formik";
 import { Link } from "react-router-dom";
 import CustomInput from "../utils/form/CustomInput";
 import { signUpFormValidation } from "../utils/validation/signUpFormValidation";
+import Toast from "../utils/toast/Toast";
 
 const SignUp = () => {
-  const handleSubmit = async (props) => {
-    const errors = await signUpFormValidation(props.values);
+  const [errorMessage, setErrorMessage] = useState("");
 
-    if (errors && errors.length > 0) {
-      console.log("errors", errors);
-      props.setErrors({ ...errors });
-    } else {
-      console.log("Form submitted successfully:", props.values);
+  const handleSubmit = async (values) => {
+    await signUpFormValidation(values);
+
+    try {
+      const res = await axios.post("/api/auth/signup", values, {
+        headers: {
+          "content-type": "application/json",
+        },
+      });
+    } catch (error) {
+      console.log("Error:", error);
+
+      // setErrorMessage("Username already exists");
+
+      if (error.response) {
+        let errorMessage = error.response.data.message;
+        if (errorMessage === "Duplicate Key Error") {
+          let key = Object.keys(error.response.data.key).toString();
+          key = key.charAt(0).toUpperCase() + key.slice(1).toLowerCase();
+
+          errorMessage = `${key} already exists`;
+          console.log(errorMessage);
+        }
+        setErrorMessage(errorMessage);
+      }
     }
-
-    props.setSubmitting(false);
   };
 
   return (
@@ -36,17 +56,15 @@ const SignUp = () => {
         <div className="flex-1">
           <Formik
             initialValues={{
-              username: "",
-              email: "",
-              password: "",
-              confirmPassword: "",
+              username: "test11",
+              email: "test11@gmail.com",
+              password: "NNNNn1",
+              confirmPassword: "NNNNn1",
             }}
             validateOnChange={false} // Update: Disable validation on change
             validateOnBlur={true} // Update: Enable validation on blur
             validate={signUpFormValidation}
-            onSubmit={(values, { setSubmitting }) => {
-              handleSubmit(values, setSubmitting); // Pass values and setSubmitting to handleSubmit
-            }}
+            onSubmit={handleSubmit}
           >
             {(props) => (
               <Form className="">
@@ -88,6 +106,8 @@ const SignUp = () => {
               </Form>
             )}
           </Formik>
+
+          {errorMessage && <Toast message={errorMessage} type="failure" />}
 
           <div className="flex gap=2 text-sm mt-5">
             <span>Have an account?</span>

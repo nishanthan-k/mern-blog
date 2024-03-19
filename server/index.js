@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import userRoutes from "./routes/user.route.js"
 import authRoutes from "./routes/auth.route.js"
 import errorHandler from "./middlewares/error/errorHandler.js";
+import cors from 'cors'
 
 dotenv.config();
 
@@ -15,13 +16,18 @@ mongoose
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-
+// app.use(
+//   cors({
+//     origin: "http://localhost:5173", // Allow requests from this origin
+//     credentials: true, // Allow sending cookies with the request
+//   })
+// );
 app.use(express.json())
 
 
 // routes
-app.use("/user", userRoutes)
-app.use("/auth", authRoutes)
+app.use("/api/user", userRoutes)
+app.use("/api/auth", authRoutes)
 
 
 app.use(errorHandler)
