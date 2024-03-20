@@ -1,27 +1,34 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { Button } from "flowbite-react";
+import { Button, Spinner } from "flowbite-react";
 import { Form, Formik } from "formik";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CustomInput from "../utils/form/CustomInput";
 import { signUpFormValidation } from "../utils/validation/signUpFormValidation";
 import Toast from "../utils/toast/Toast";
 
 const SignUp = () => {
   const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (values) => {
     await signUpFormValidation(values);
-
+    setLoading(true)
     try {
       const res = await axios.post("/api/auth/signup", values, {
         headers: {
           "content-type": "application/json",
         },
       });
-    } catch (error) {
-      console.log("Error:", error);
 
+      
+      <Toast message="User created successfully" type="success" />
+      setLoading(false);
+      navigate("/signin")
+    } catch (error) {
+
+      setLoading(false);
       // setErrorMessage("Username already exists");
 
       if (error.response) {
@@ -56,10 +63,10 @@ const SignUp = () => {
         <div className="flex-1">
           <Formik
             initialValues={{
-              username: "test11",
-              email: "test11@gmail.com",
-              password: "NNNNn1",
-              confirmPassword: "NNNNn1",
+              username: "",
+              email: "",
+              password: "",
+              confirmPassword: "",
             }}
             validateOnChange={false} // Update: Disable validation on change
             validateOnBlur={true} // Update: Enable validation on blur
@@ -100,8 +107,16 @@ const SignUp = () => {
                   type="submit"
                   gradientDuoTone="purpleToPink"
                   className="mt-5 w-full"
+                  disabled={loading}
                 >
-                  Sign Up
+                  {loading ? (
+                    <>
+                      <Spinner size="sm" />
+                      <span className="pl-3" >Loading...</span>
+                    </>
+                  ) : (
+                    "Sign Up"
+                  )}
                 </Button>
               </Form>
             )}
@@ -109,7 +124,7 @@ const SignUp = () => {
 
           {errorMessage && <Toast message={errorMessage} type="failure" />}
 
-          <div className="flex gap=2 text-sm mt-5">
+          <div className="flex gap-2 text-sm mt-5">
             <span>Have an account?</span>
             <Link to="/signin" className="text-blue-500">
               Sign In
