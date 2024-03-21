@@ -1,0 +1,41 @@
+[
+  {
+    "title": "About",
+    "link": [
+      {
+        "hrefPath": "https://www.100jsprojects.com",
+        "content": "100 JS Projects"
+      },
+      {
+        "hrefPath": "/about",
+        "content": "Master Blog"
+      }
+    ]
+  },
+  {
+    "title": "Follow us",
+    "link": [
+      {
+        "hrefPath": "https://github.com/nishanthan-k",
+        "content": "Github"
+      },
+      {
+        "hrefPath": "#",
+        "content": "Discord"
+      }
+    ]
+  },
+  {
+    "title": "Legal",
+    "link": [
+      {
+        "hrefPath": "#",
+        "content": "Privacy Policy"
+      },
+      {
+        "hrefPath": "#",
+        "content": "Terms and Conditions"
+      }
+    ]
+  }
+]
