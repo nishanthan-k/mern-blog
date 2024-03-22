@@ -16,7 +16,6 @@ const errorHandler = (error, req, res, next) => {
     success: false,
     status: statusCode,
     message: message,
-    error: error,
   });
 };
 
