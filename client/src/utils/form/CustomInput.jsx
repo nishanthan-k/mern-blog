@@ -1,5 +1,4 @@
 import { useField } from "formik";
-import React from "react";
 
 const CustomInput = ({ label, ...props }) => {
   const [field, meta, helpers] = useField(props.name);
