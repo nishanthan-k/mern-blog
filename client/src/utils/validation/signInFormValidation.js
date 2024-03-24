@@ -11,6 +11,15 @@ export const signInFormValidation = async (values) => {
     await schema.validate(values, { abortEarly: false });
     return {};
   } catch (error) {
-    // console.log(error)
+    const errors = {};
+    if (error.inner) {
+      error.inner.forEach((err) => {
+        errors[err.path] = err.message;
+      });
+    } else {
+      // Handle other types of errors
+      console.error(error); // Log the error for debugging
+    }
+    return errors;
   }
 };

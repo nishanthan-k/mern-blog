@@ -6,16 +6,19 @@ import { Link, useNavigate } from "react-router-dom";
 import CustomInput from "../utils/form/CustomInput";
 import Toast from "../utils/toast/Toast";
 import { signInFormValidation } from "../utils/validation/signInFormValidation";
+import { signInStart, signInSuccess, signInFailure } from "../redux/user/userSlice"
+import {useDispatch, useSelector} from "react-redux"
 
 const SignIn = () => {
-  const [errorMessage, setErrorMessage] = useState("");
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const dispath = useDispatch()
+  const {loading, error: errorMessage} = useSelector(state => state.user);
+  // const [errorMessage, setErrorMessage] = useState("");
+  // const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (values) => {
-    console.log('submit called');
     await signInFormValidation(values);
-    setLoading(true);
+    dispath(signInSuccess())
     try {
       const res = await axios.post("/api/auth/signin", values, {
         headers: {
@@ -23,24 +26,19 @@ const SignIn = () => {
         },
       });
 
-      <Toast message="Signin successful" type="success" />;
-      setLoading(false);
-      navigate("/");
-    } catch (error) {
-      setLoading(false);
-      // setErrorMessage("Username already exists");
+      if (!res.data.success) {
+        dispath(signInFailure(res.data.message))
+      } 
 
-      if (error.response) {
-        let errorMessage = error.response.data.message;
-        if (errorMessage === "Duplicate Key Error") {
-          let key = Object.keys(error.response.data.key).toString();
-          key = key.charAt(0).toUpperCase() + key.slice(1).toLowerCase();
-
-          errorMessage = `${key} already exists`;
-          console.log(errorMessage);
-        }
-        setErrorMessage(errorMessage);
+      // separate if to avoid potential issues
+      if (res.data.success) {
+        dispath(signInSuccess(res.data));
+        <Toast message="Signin successful" type="success" />;
+        navigate("/");
       }
+
+    } catch (error) {
+      dispath(signInFailure(error.response.data.message))
     }
   };
   return (
@@ -61,8 +59,8 @@ const SignIn = () => {
         <div className="flex-1">
           <Formik
             initialValues={{
-              email: "n@gmail.com",
-              password: "NNNNn1",
+              email: "",
+              password: "",
             }}
             validateOnChange={false} // Update: Disable validation on change
             validateOnBlur={true} // Update: Enable validation on blur
