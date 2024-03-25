@@ -58,7 +58,7 @@ const FooterComp = () => {
             <Footer.Icon href="#" icon={BsInstagram} />
             <Footer.Icon href="#" icon={BsTwitter} />
             <Footer.Icon
-              href="https://github.com/sahandghavidel"
+              href="https://github.com/nishanthan-k"
               icon={BsGithub}
             />
             <Footer.Icon href="#" icon={BsDribbble} />

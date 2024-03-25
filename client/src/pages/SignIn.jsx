@@ -1,24 +1,24 @@
 import axios from "axios";
 import { Button, Spinner } from "flowbite-react";
 import { Form, Formik } from "formik";
-import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import OAuth from "../components/OAuth";
+import { signInFailure, signInSuccess } from "../redux/user/userSlice";
 import CustomInput from "../utils/form/CustomInput";
 import Toast from "../utils/toast/Toast";
 import { signInFormValidation } from "../utils/validation/signInFormValidation";
-import { signInStart, signInSuccess, signInFailure } from "../redux/user/userSlice"
-import {useDispatch, useSelector} from "react-redux"
 
 const SignIn = () => {
   const navigate = useNavigate();
-  const dispath = useDispatch()
+  const dispatch = useDispatch()
   const {loading, error: errorMessage} = useSelector(state => state.user);
   // const [errorMessage, setErrorMessage] = useState("");
   // const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (values) => {
     await signInFormValidation(values);
-    dispath(signInSuccess())
+    dispatch(signInSuccess())
     try {
       const res = await axios.post("/api/auth/signin", values, {
         headers: {
@@ -27,18 +27,18 @@ const SignIn = () => {
       });
 
       if (!res.data.success) {
-        dispath(signInFailure(res.data.message))
+        dispatch(signInFailure(res.data.message))
       } 
 
       // separate if to avoid potential issues
       if (res.data.success) {
-        dispath(signInSuccess(res.data));
+        dispatch(signInSuccess(res.data));
         <Toast message="Signin successful" type="success" />;
         navigate("/");
       }
 
     } catch (error) {
-      dispath(signInFailure(error.response.data.message))
+      dispatch(signInFailure(error.response.data.message))
     }
   };
   return (
@@ -99,6 +99,7 @@ const SignIn = () => {
                     "Sign In"
                   )}
                 </Button>
+                <OAuth />
               </Form>
             )}
           </Formik>

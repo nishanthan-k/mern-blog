@@ -1,11 +1,12 @@
 import axios from "axios";
-import  { useState } from "react";
 import { Button, Spinner } from "flowbite-react";
 import { Form, Formik } from "formik";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import OAuth from "../components/OAuth";
 import CustomInput from "../utils/form/CustomInput";
-import { signUpFormValidation } from "../utils/validation/signUpFormValidation";
 import Toast from "../utils/toast/Toast";
+import { signUpFormValidation } from "../utils/validation/signUpFormValidation";
 
 const SignUp = () => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -118,6 +119,7 @@ const SignUp = () => {
                     "Sign Up"
                   )}
                 </Button>
+                <OAuth />
               </Form>
             )}
           </Formik>
