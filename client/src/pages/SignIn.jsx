@@ -18,7 +18,7 @@ const SignIn = () => {
 
   const handleSubmit = async (values) => {
     await signInFormValidation(values);
-    dispatch(signInSuccess())
+    // dispatch(signInSuccess())
     try {
       const res = await axios.post("/api/auth/signin", values, {
         headers: {
@@ -36,8 +36,8 @@ const SignIn = () => {
         <Toast message="Signin successful" type="success" />;
         navigate("/");
       }
-
     } catch (error) {
+      console.log(error);
       dispatch(signInFailure(error.response.data.message))
     }
   };

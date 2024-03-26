@@ -32,11 +32,11 @@ export default function OAuth() {
       };
       const res = await axios.post("api/auth/google", values, headers);
       if (!res.data.success) {
-        dispatch(signInFailure(res.data.message));
+        dispatch(signInFailure(res.data));
       }
-
-      if (res.ok) {
-        dispatch(signInSuccess(res.data.message));
+      console.log(res.data);
+      if (res.data.success) {
+        dispatch(signInSuccess(res.data));
         navigate("/");
       }
     } catch (error) {

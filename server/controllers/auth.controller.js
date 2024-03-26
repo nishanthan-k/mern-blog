@@ -77,7 +77,7 @@ export const google = async (req, res, next) => {
     if (user) {
       const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
       const { password, ...rest } = user._doc;
-      res.status(200).json({
+      return res.status(200).json({
         success: true,
         message: "Signin successful",
         access_token: token,
@@ -96,9 +96,9 @@ export const google = async (req, res, next) => {
       await newUser.save();
       const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
       const { password, ...rest } = newUser._doc;
-      res.status(200).json({
+      return res.status(200).json({
         success: true,
-        message: "Signin successful",
+        message: "User created and Signin successful",
         access_token: token,
         details: { ...rest },
       });
